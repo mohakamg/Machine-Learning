@@ -2,6 +2,7 @@
 import numpy as np
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
+import time
 # A class that models the Neural Net with L-layers and
 # N neurons in each layer. It also contains the functions
 # for training, testing, and optimizing the Neural Network
@@ -139,6 +140,7 @@ class DeepNN:
         self.gradient = gradient
 
     def learn(self, epochs, learning_rate, X, y, activations, cost_func, metrics_at=10, optimizer = '', batch_size=10, scaler_type='standard_scaler', split=False, test_size=0.25):
+        start = time.time()
 
         if scaler_type == 'min_max_scaler':
             self.scaler = preprocessing.MinMaxScaler()
@@ -163,9 +165,10 @@ class DeepNN:
                 for j in range(len(self.gradient)):
                     self.weights[j] = self.weights[j] - learning_rate*self.gradient[j]
 
-
                 if(i%metrics_at == 0):
+                    print('/------------ ######### Learning ######### ------------/') 
                     curr_op = self.forwardFeed(X, activations)
+                    print('Effective epoch: ', i/metrics_at + 1)
                     if(cost_func == 'log_loss'):
                         cost = self.log_loss(y)
                         print('Accuracy: ', np.mean(np.round(self.think(X))==y) * 100, '%')
@@ -173,9 +176,11 @@ class DeepNN:
                         cost = self.least_squares_cost(y)
                     print('Cost: ', cost, '\n')
 
-        if(cost_func == 'log_loss' and train_test_split):
+        if(cost_func == 'log_loss' and split):
             print('Testing Accuracy: ', np.mean(np.round(self.think(X_test))==y_test) * 100, '%')
 
+        end = time.time()
+        print('Time Taken: ', end-start, ' seconds')
         return self.weights
 
     def think(self,X):
