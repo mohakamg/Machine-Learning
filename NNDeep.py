@@ -166,8 +166,7 @@ class DeepNN:
                     self.weights[j] = self.weights[j] - learning_rate*self.gradient[j]
 
                 if(i%metrics_at == 0):
-                    print('/------------ ######### Learning ######### ------------/') 
-                    curr_op = self.forwardFeed(X, activations)
+                    self.forwardFeed(X, activations)
                     print('Effective epoch: ', i/metrics_at + 1)
                     if(cost_func == 'log_loss'):
                         cost = self.log_loss(y)
